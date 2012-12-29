@@ -1,4 +1,8 @@
-
+document.addEventListener('deviceready',function(){
+	
+	$("body").append("<div id='splash'><img src='assets/images/icons/splash_sun.png'/></div>");
+	
+});
 
 function w(){
 	
@@ -10,46 +14,58 @@ function w(){
 	 * To change this template use File | Settings | File Templates.
 	 */
 
-      
+      var debug = false;
 	  var loc = new Object();
 	  var weather = new Object();
-	 
 
+	  	if(debug){
+	  		$("body").append("<p id='step1'>getting location...</p>");
+	  	}
 	    navigator.geolocation.getCurrentPosition(function(location){
 	        loc.lat = location.coords.latitude;
 	        loc.long = location.coords.longitude;
-	        
+	        debug ? $("#step1").append("OK <br/>lat="+loc.lat+"<br/>long="+loc.long) : '';
+
 	        reverseGeoCode(loc);
 	    },function(error){
 	    	alert("error");
-	    });
+	    },{enableHighAccuracy:true});
 
 	    
 	    function reverseGeoCode(loc){
+	    	debug ?	$("body").append("<p id='step2'>reverse geocoding...</p>") : '';
+
 	       // console.log(loc);
 	        $.ajax({
-	            url:"http://maps.googleapis.com/maps/api/geocode/json?latlng="+loc.lat+","+loc.long+"&sensor=true",
+	            url:"http://api.geonames.org/findNearbyPlaceNameJSON?lat="+loc.lat+"&lng="+loc.long+"&username=aero_students&lang=bg",
 	            type:"GET",
-	            dataType:"JSON",
+	            dataType:"JSONP",
 	            success:function(data){
-	                weather.place = data.results[4].formated_address;
+	            	debug ? $("#step2").append("OK") : '';
+	            	//$('body').append($.parseJSON(data).toString());
+	            		
+	                   loc.town = data.geonames[0].name;
+	                   
+	                   loc.country = data.geonames[0].countryCode;
+	                   loc.country_name = data.geonames[0].countryName;
+	                   
+		                weather.place = loc.town+" ,"+loc.country;
 
-	                loc.town = data.results['0'].address_components['2'].long_name;
-	                   loc.country = data.results['0'].address_components['4'].short_name;
-	                   loc.country_name = data.results[0].address_components[4].long_name;
-	                
 	                   getSunrise(loc);
 
 
 	                   
 	            },
 	            error:function(){
-	            	alert('error')
+	            	alert('error');
 	            }
 	        });
 	    }
-	  
+	    
+	    
 	    function getSunrise(loc){
+	    	debug ? $("body").append("<p id='step3'>getting sunrise/sunset...</p>") : '';
+
 	        $.ajax({
 	            url:"http://api.geonames.org/timezoneJSON?lat="+loc.lat+"&lng="+loc.long+"&username=aero_students&callback=?",
 	            dataType:'JSONP',
@@ -57,7 +73,7 @@ function w(){
 
 	             loc.sunrise = new Date(data.sunrise);
 	             loc.sunset = new Date(data.sunset);
-
+	            debug ? $("#step3").append("OK") :'';
 	               getWeather(loc);
 
 
@@ -67,12 +83,13 @@ function w(){
 
 
 	    function getWeather(place){
+	    	debug ? $("body").append("<p id='step4'>getting weather...</p>") : '';
 
 	        $.ajax({
-	           url:"http://api.wunderground.com/api/45449d3bedba48af/conditions/q/"+place.country+"/"+place.town+".json?callback=?",
+	           url:"http://api.wunderground.com/api/45449d3bedba48af/conditions/q/"+loc.lat+","+loc.long+".json?callback=?",
 	           dataType:"jsonp",
 	           success:function(data){
-
+	        	   debug ? $("body").append(JSON.stringify(data)) : '';
 	             //  var forecast  =  data.forecast.simpleforecast.forecastday[0];
 
 	               var result = data.current_observation;
@@ -94,8 +111,16 @@ function w(){
 	                       weather.secondImageStyle = 'position:absolute;top:0px;width:100%;left:0px';
 	                   }
 	                   if(result.icon === 'mostlycloudy'){
-	                       weather.secondImage = 'assets/images/cloudy_night.png';
-	                       weather.secondImageStyle = 'position:absolute;top:0px;width:100%;left:0px;height:40%;z-index:-1';
+	                       weather.background = 'assets/images/cloudy_night.png';
+
+	                       weather.secondImage = 'assets/images/dark_cloud_night_2.png';
+	                       weather.secondImageStyle = 'position:absolute;top:15px;width:80%;left:10%;height:25%;';
+	                   }
+	                   if(result.icon === 'cloudy'){
+	                       weather.background = 'assets/images/cloudy_night.png';
+	                	   weather.skyBody = '';
+	                       weather.secondImage = 'assets/images/dark_cloud_night_2.png';
+	                       weather.secondImageStyle = 'position:absolute;top:5%;width:100%;height:30%';
 	                   }
 	                   if(result.icon === 'rain'){
 	                       weather.background = 'assets/images/cloudy_night.png';
@@ -134,6 +159,18 @@ function w(){
 	                       weather.secondImage = 'assets/images/rain_day.png';
 	                       weather.secondImageStyle = 'position:absolute;top:20%;width:70%;left:15%;height:20%';
 	                       
+	                   }
+	                   if(result.icon === 'mostlycloudy'){
+	                       weather.background = 'assets/images/grey_cloudy_day.jpg';
+	                	   weather.skyBody = '';
+	                	   weather.secondImage = 'assets/images/white_cloud_day_2.png';
+	                       weather.secondImageStyle = 'position:absolute;top:15%;width:70%;left:15%;height:20%';
+	                   }
+	                   if(result.icon === 'cloudy'){
+	                       weather.background = 'assets/images/dark_cloudy_day.jpg';
+	                	   weather.skyBody = '';
+	                	   weather.secondImage = 'assets/images/white_cloud_day_2.png';
+	                       weather.secondImageStyle = 'position:absolute;top:5%;width:100%;height:30%';
 	                   }
 	                   if(result.icon === 'snow'){
 	                       weather.background = 'assets/images/grey_cloudy_day.jpg';
@@ -213,6 +250,7 @@ function w(){
 
 
 	    function initCanvas(weather){
+	    
 	    	$('body').empty();
 	    	$('body').append("<canvas id='canvas'></canvas>");
 	    
@@ -317,7 +355,8 @@ function w(){
 	    $('body').append("<div id='refreshButton'></div>");
 	    $('#refreshButton')[0].addEventListener('touchstart',function(){
 	    	$("#refreshButton").addClass('animated');
-			navigator.accelerometer.clearWatch(compass);
+			  navigator.accelerometer.clearWatch(compass);
+
 			transform = false;
 	    	w();
 	    });
@@ -327,7 +366,7 @@ function w(){
     	document.getElementById('info').addEventListener('touchstart',function(target){
     		if(transform){
     			transform = false;
-    			
+
     		}else{
     			transform =true;
     			
@@ -356,7 +395,6 @@ function w(){
         		$("#wIcon,#temp,#location,#time").css('-webkit-transform-style','none');
             	$("#wIcon,#temp,#location,#time").css('-webkit-transform','none');
             	$("#wIcon,#temp,#location,#time").css('transform','none');
-    			navigator.accelerometer.clearWatch(compass);
 
 
         	}
