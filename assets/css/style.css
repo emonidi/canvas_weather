@@ -1,0 +1,38 @@
+*,body{
+    margin:0px;
+    padding:0px;
+}
+
+#skyBody{
+    position: absolute;
+    top:20px;
+}
+
+#location{
+
+}
+
+#refreshButton{
+	width:32px;
+	height:32px;
+	position:absolute;
+	top:2%;
+	right:2%;
+	background-image:url(assets/images/refresh.png);
+	background-repeat:no-repeat;
+}
+
+.rainFall {
+		-webkit-animation: raining 2s linear 0s infinite normal;
+	}
+
+
+
+	@-webkit-keyframes raining {
+		0% {
+			background-position: 0px 0px;
+		}
+		100% {
+			background-position: 0px 200px;
+		}
+	}
