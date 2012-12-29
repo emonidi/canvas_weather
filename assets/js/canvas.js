@@ -1,6 +1,7 @@
 
 
 function w(){
+	
 	/**
 	 * Created with JetBrains WebStorm.
 	 * User: admin
@@ -9,8 +10,10 @@ function w(){
 	 * To change this template use File | Settings | File Templates.
 	 */
 
-
-	  var loc = new Object;
+      
+	  var loc = new Object();
+	  var weather = new Object();
+	 
 
 	    navigator.geolocation.getCurrentPosition(function(location){
 	        loc.lat = location.coords.latitude;
@@ -39,10 +42,13 @@ function w(){
 
 
 	                   
+	            },
+	            error:function(){
+	            	alert('error')
 	            }
 	        });
 	    }
-	    var weather = new Object();
+	  
 	    function getSunrise(loc){
 	        $.ajax({
 	            url:"http://api.geonames.org/timezoneJSON?lat="+loc.lat+"&lng="+loc.long+"&username=aero_students&callback=?",
@@ -207,8 +213,10 @@ function w(){
 
 
 	    function initCanvas(weather){
-
-	    	$('#canvas').empty();
+	    	$('body').empty();
+	    	$('body').append("<canvas id='canvas'></canvas>");
+	    
+	    	
 	        var canvas = document.getElementById("canvas");
 
 	        $('body').css('margin','0px');
@@ -284,6 +292,7 @@ function w(){
 }
 	$(document).ready(function(){
 		document.addEventListener('deviceready',function(){
+		
 			w();
 		});
 	
@@ -306,19 +315,29 @@ function w(){
 	    "</div>");
 	    
 	    $('body').append("<div id='refreshButton'></div>");
+	    $('#refreshButton')[0].addEventListener('touchstart',function(){
+	    	$("#refreshButton").addClass('animated');
+			navigator.accelerometer.clearWatch(compass);
+			transform = false;
+	    	w();
+	    });
 	    
 	    var transform = false;
-    	
+
     	document.getElementById('info').addEventListener('touchstart',function(target){
     		if(transform){
     			transform = false;
+    			
     		}else{
     			transform =true;
+    			
     		}
     		
     	
     	});
 	    
+    	
+    	
         var compass  = navigator.accelerometer.watchAcceleration(function(acc){
         	var z = acc.z.toFixed('1');
         	var x = acc.x.toFixed('1');
@@ -337,6 +356,8 @@ function w(){
         		$("#wIcon,#temp,#location,#time").css('-webkit-transform-style','none');
             	$("#wIcon,#temp,#location,#time").css('-webkit-transform','none');
             	$("#wIcon,#temp,#location,#time").css('transform','none');
+    			navigator.accelerometer.clearWatch(compass);
+
 
         	}
 

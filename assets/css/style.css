@@ -18,9 +18,24 @@
 	position:absolute;
 	top:2%;
 	right:2%;
-	background-image:url(assets/images/refresh.png);
+	background-image:url(../images/refresh.png);
 	background-repeat:no-repeat;
 }
+
+#refreshButton.animated{
+	-webkit-animation: refresh 1s linear 0s infinite normal;
+}
+
+@-webkit-keyframes refresh{
+	
+	0%{ -webkit-transform:rotateZ(0deg); }
+	25%{ -webkit-transform:rotateZ(90deg); }
+	50% {-webkit-transform:rotateZ(180deg) ;}
+	75% {-webkit-transform:rotateZ(270deg); }
+	100% {-webkit-transform:rotateZ(360deg);}
+}
+
+
 
 .rainFall {
 		-webkit-animation: raining 2s linear 0s infinite normal;
