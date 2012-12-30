@@ -1,6 +1,6 @@
 document.addEventListener('deviceready',function(){
 	
-	$("body").append("<div id='splash'><img src='assets/images/icons/splash_sun.png'/></div>");
+	//$("body").append("<div id='splash'><img src='assets/images/icons/splash_sun.png'/></div>");
 	
 });
 
@@ -14,7 +14,7 @@ function w(){
 	 * To change this template use File | Settings | File Templates.
 	 */
 
-      var debug = false;
+      var debug = true;
 	  var loc = new Object();
 	  var weather = new Object();
 
@@ -101,9 +101,6 @@ function w(){
 	                   loc.time = 'night';
 	                   weather.background = 'assets/images/starry_sky.jpg';
 	                   weather.skyBody = 'assets/images/moon.png';
-	                   if(result.icon === 'clear'){
-	                	   result.icon = 'clear_night';
-	                   }
 	                   if(result.icon === 'fog'){
 	                	   weather.skyBody = '';
 	                       weather.background = 'assets/images/foggy_night.jpg';
@@ -145,6 +142,10 @@ function w(){
 	                   loc.time = 'day';
 	                   weather.background = 'assets/images/clear_day.jpg';
 	                   weather.skyBody = 'assets/images/sun.png';
+	                   if(result.icon === 'clear' || result.icon === 'sunny'){
+	                	   weather.secondImage = '';
+	                	   result.icon = 'clear';
+	                   }
 	                   if(result.icon === 'fog'){
 	                       weather.skyBody = '';
 	                       weather.background = 'assets/images/foggy_day.jpg';
@@ -347,12 +348,17 @@ function w(){
 	function deployInfo(weather,ctx){
 		$('#info').remove();
 	    $('body').append("<div id='info'>"+
-	                   "<div id='location' style='position: absolute;top:50%;margin-left: 5%;padding:5px 10px;color: white;font-size: 16px;font-family: Arial;border-bottom:solid 1px white;'>"+weather.location.town+", "+weather.location.country+"</div>"+
-	                   "<div id='time' style='position: absolute;top: 55%;margin-left: 5%;padding:5px 10px;color: white;font-size: 16px;font-family: Arial'>"+weather.time+"</div>"+
-	                   "<div id='temp' style='position: absolute;top: 60%;margin-left: 4%;padding:5px 10px;color: white;font-size: 75px;font-family: Arial'>"+weather.temperature+"&deg</div>"+
-	                   "<div id='pic' style='position: absolute;top: 50%;right:4%;color: white;font-size: 75px;font-family: Arial'><img id='wIcon' src='"+weather.pic+"' style='height:"+window.document.width*0.35+"px'/></div>"+
-	                   "<div class='helper' style='position: absolute;top: 70%;right:4%;color: white;font-size: 25px;font-family: Arial'></div>"+
+	                 "<div id='mainInfo'>"+
+	                  "<div id='location' style=''>"+weather.location.town+", "+weather.location.country+"</div>"+
+	                   "<div id='time' style=''>"+weather.time+"</div>"+
+	                   "<div id='temp' style=''>"+weather.temperature+"&deg</div>"+
+	                   "<div id='pic' style=''><img id='wIcon' src='"+weather.pic+"' style='height:"+window.document.width*0.35+"px'/></div>"+
+	                   "<div class='helper' style=''></div>"+
 	                  
+	                 "</div>"+
+	                 "<div id='forecastInfo'>"+
+	                 "<p>BLAH BLAHA</p>"+
+	                 "</div>"+
 	    "</div>");
 	    
 	    $('body').append("<div id='refreshButton'></div>");

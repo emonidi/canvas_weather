@@ -18,6 +18,31 @@ body{
 backgrond-color:transparent;
 }
 
+#info{
+	display:inline-table;
+	width:100%;
+	
+	overflow:hidden;
+	position:absolute;
+	top:35%;
+	
+}
+
+#forecastInfo{
+	position:absolute;
+	float:left;
+	width:100%;
+	overflow:hidden;
+}
+
+#mainInfo{
+	position:absolute;
+	float:left;
+	width:100%;
+	height:200px;
+	overflow:hidden;
+}
+
 #refreshButton{
 	width:32px;
 	height:32px;
