@@ -101,6 +101,9 @@ function w(){
 	                   loc.time = 'night';
 	                   weather.background = 'assets/images/starry_sky.jpg';
 	                   weather.skyBody = 'assets/images/moon.png';
+	                   if(result.icon === 'clear'){
+	                	   result.icon = 'clear_night';
+	                   }
 	                   if(result.icon === 'fog'){
 	                	   weather.skyBody = '';
 	                       weather.background = 'assets/images/foggy_night.jpg';
