@@ -1,6 +1,10 @@
+$(document).ready(function(){
+$("body").append("OK");
+	$("body").on('touchmove',function(e){e.preventDefault();});
+});
 document.addEventListener('deviceready',function(){
 	
-	//$("body").append("<div id='splash'><img src='assets/images/icons/splash_sun.png'/></div>");
+	$("#mainWrapper").append("<div id='splash'><img src='assets/images/icons/splash_sun.png'/></div>");
 	
 });
 
@@ -19,12 +23,12 @@ function w(){
 	  var weather = new Object();
 
 	  	if(debug){
-	  		$("body").append("<p id='step1'>getting location...</p>");
+	  		$("#mainWrapper").append("<p id='step1'>getting location...</p>");
 	  	}
 	    navigator.geolocation.getCurrentPosition(function(location){
-	        loc.lat = location.coords.latitude;
-	        loc.long = location.coords.longitude;
-	        debug ? $("#step1").append("OK <br/>lat="+loc.lat+"<br/>long="+loc.long) : '';
+	        loc['lat'] = location.coords.latitude;
+	        loc['long'] = location.coords.longitude;
+	        debug ? $("#step1").append("OK <br/>lat="+loc['lat']+"<br/>long="+loc['long']) : '';
 
 	        reverseGeoCode(loc);
 	    },function(error){
@@ -33,16 +37,16 @@ function w(){
 
 	    
 	    function reverseGeoCode(loc){
-	    	debug ?	$("body").append("<p id='step2'>reverse geocoding...</p>") : '';
+	    	debug ?	$("#mainWrapper").append("<p id='step2'>reverse geocoding...</p>") : '';
 
 	       // console.log(loc);
 	        $.ajax({
-	            url:"http://api.geonames.org/findNearbyPlaceNameJSON?lat="+loc.lat+"&lng="+loc.long+"&username=aero_students&lang=bg",
+	            url:"http://api.geonames.org/findNearbyPlaceNameJSON?lat="+loc['lat']+"&lng="+loc['long']+"&username=aero_students&lang=bg",
 	            type:"GET",
 	            dataType:"JSONP",
 	            success:function(data){
 	            	debug ? $("#step2").append("OK") : '';
-	            	//$('body').append($.parseJSON(data).toString());
+	            	//$('#mainWrapper').append($.parseJSON(data).toString());
 	            		
 	                   loc.town = data.geonames[0].name;
 	                   
@@ -64,16 +68,16 @@ function w(){
 	    
 	    
 	    function getSunrise(loc){
-	    	debug ? $("body").append("<p id='step3'>getting sunrise/sunset...</p>") : '';
+	    	debug ? $("#mainWrapper").append("<p id='step3'>getting sunrise/sunset...</p>") : '';
 
 	        $.ajax({
-	            url:"http://api.geonames.org/timezoneJSON?lat="+loc.lat+"&lng="+loc.long+"&username=aero_students&callback=?",
+	            url:"http://api.geonames.org/timezoneJSON?lat="+loc['lat']+"&lng="+loc['long']+"&username=aero_students&callback=?",
 	            dataType:'JSONP',
 	            success:function(data){
 
 	             loc.sunrise = new Date(data.sunrise);
 	             loc.sunset = new Date(data.sunset);
-	            debug ? $("#step3").append("OK") :'';
+	             $("#step3").append("OK");
 	               getWeather(loc);
 
 
@@ -83,18 +87,18 @@ function w(){
 
 
 	    function getWeather(place){
-	    	debug ? $("body").append("<p id='step4'>getting weather...</p>") : '';
+	    	debug ? $("#mainWrapper").append("<p id='step4'>getting weather...</p>") : '';
 
 	        $.ajax({
-	           url:"http://api.wunderground.com/api/45449d3bedba48af/conditions/q/"+loc.lat+","+loc.long+".json?callback=?",
+	           url:"http://api.wunderground.com/api/45449d3bedba48af/conditions/q/"+loc['lat']+","+loc['long']+".json?callback=?",
 	           dataType:"jsonp",
 	           success:function(data){
-	        	   debug ? $("body").append(JSON.stringify(data)) : '';
+	        	   debug ? $("#mainWrapper").append(JSON.stringify(data)) : '';
 	             //  var forecast  =  data.forecast.simpleforecast.forecastday[0];
 
 	               var result = data.current_observation;
-	               // result.icon = 'snow';
-	                //result.temp_c = '-12';
+	                result.icon = 'snow';
+	                result.temp_c = '12';
 	               //console.log(result);
 	               var hour = new Date(result.local_time_rfc822);
 	               if(hour >  loc.sunset){
@@ -143,8 +147,9 @@ function w(){
 	                   weather.background = 'assets/images/clear_day.jpg';
 	                   weather.skyBody = 'assets/images/sun.png';
 	                   if(result.icon === 'clear' || result.icon === 'sunny'){
+	                	   weather.icon = 'clear';
 	                	   weather.secondImage = '';
-	                	   result.icon = 'clear';
+	                	   weather.secondImageStyle='';
 	                   }
 	                   if(result.icon === 'fog'){
 	                       weather.skyBody = '';
@@ -215,7 +220,7 @@ function w(){
 
 
 	        function  rainy(result,loc){
-	            $('body').append(function(){
+	            $('#mainWrapper').append(function(){
 
 	            });
 	        }
@@ -225,7 +230,7 @@ function w(){
 	            if(result.temp_c < 0){
 	                if(loc.time === 'day'){
 	                    weather.icy = function(){
-	                        $('body').append("<div class='icy' style='width:"+window.document.width+"px;display:none;'>"+
+	                        $('#mainWrapper').append("<div class='icy' style='width:"+window.document.width+"px;display:none;'>"+
 	                            "<img src='assets/images/icy_day_left.png' style='position: absolute;top:0px;left:0px;height:"+$('canvas').height()+"px'/>"+
 	                            "<img src='assets/images/icy_day_right.png' style='position: absolute;top:0px;right:0px;height:"+$('canvas').height()+"px'/>"
 
@@ -234,7 +239,7 @@ function w(){
 	                    };
 	                }else{
 	                    weather.icy = function(){
-	                        $('body').append("<div class='icy' style='width:"+window.document.width+"px;display:none;height:"+window.document.height+"px'>"+
+	                        $('#mainWrapper').append("<div class='icy' style='width:"+window.document.width+"px;display:none;height:"+window.document.height+"px'>"+
 	                            "<img src='assets/images/icy_night_left.png' style='position: absolute;top:0px;left:0px;height:"+$('canvas').height()+"px'/>"+
 	                            "<img src='assets/images/icy_night_right.png' style='position: absolute;top:0px;right:0px;height:"+$('canvas').height()+"px'/>"
 
@@ -254,26 +259,30 @@ function w(){
 
 
 	    function initCanvas(weather){
-	    
-	    	$('body').empty();
-	    	$('body').append("<canvas id='canvas'></canvas>");
+	    	
+	    	$('#mainWrapper').empty();
+	    	$('#mainWrapper').append("<canvas id='canvas'></canvas>");
 	    
 	    	
 	        var canvas = document.getElementById("canvas");
+	         
+	         WebGL2D.enable(canvas); // adds "webgl-2d" context to cvs
 
-	        $('body').css('margin','0px');
+
+	        $('#mainWrapper').css('margin','0px');
 	        canvas.setAttribute('width',window.document.width);
 	        canvas.setAttribute('height',window.document.height);
 	        var bgImg = new Image();
 	        bgImg.src = weather.background;
 	        var ctx =  canvas.getContext('2d');
 
+
 	        bgImg.onload = function(){
 	            ctx.drawImage(bgImg,0,0,1280,window.document.height);
 	            //console.log(window.innerHeight = $('canvas').height());
 	            //append sun/moon
-	            $('body').append("<img id='skyBody' src='"+weather.skyBody+"' style='position:absolute;top:0px;left:"+window.document.width*0.2+"px ;width:"+window.document.width*0.6+"px'/>");
-	            $('body').append("<div id='secondImage'><img src='"+weather.secondImage+"' style='"+weather.secondImageStyle+"'/></div>");
+	            $('#mainWrapper').append("<img id='skyBody' src='"+weather.skyBody+"' style='position:absolute;top:0px;left:"+window.document.width*0.2+"px ;width:"+window.document.width*0.6+"px'/>");
+	            $('#mainWrapper').append("<div id='secondImage'><img src='"+weather.secondImage+"' style='"+weather.secondImageStyle+"'/></div>");
 	            deployInfo(weather,ctx);
 	            animateCanvas(ctx,bgImg,weather);
 	
@@ -347,21 +356,48 @@ function w(){
 
 	function deployInfo(weather,ctx){
 		$('#info').remove();
-	    $('body').append("<div id='info'>"+
-	                 "<div id='mainInfo'>"+
-	                  "<div id='location' style=''>"+weather.location.town+", "+weather.location.country+"</div>"+
-	                   "<div id='time' style=''>"+weather.time+"</div>"+
-	                   "<div id='temp' style=''>"+weather.temperature+"&deg</div>"+
-	                   "<div id='pic' style=''><img id='wIcon' src='"+weather.pic+"' style='height:"+window.document.width*0.35+"px'/></div>"+
-	                   "<div class='helper' style=''></div>"+
-	                  
-	                 "</div>"+
-	                 "<div id='forecastInfo'>"+
-	                 "<p>BLAH BLAHA</p>"+
-	                 "</div>"+
+		
+	    $('#mainWrapper').append("<div id='info' style='position:absolute;top:50%;width:100%;display:inline;height:200px;'>"+
+	                  "<div id='mainInfo' style='float:left;'>"+
+		                  "<div id='loctime' style='display:inline;color: white;font-size: 16px;padding:0px 10px 0px 10px;font-family: Arial;border-bottom:solid 1px white;width:90%;position:absolute;margin-left:2%;margin-right:2%'>"+
+		                   "<span id='location' style='float:left'>"+weather.location.town+", "+weather.location.country+"</span>"+
+		                   "<span id='time' style='float:right'>"+weather.time+"</span>"+
+	
+		                   "</div>"+
+		                   "<div id='pictemp' style='display:inline'>"+
+			                   "<div id='temp' style='float:left;margin-top:20px;padding:0px 10px 0px 10px;color: white;font-size: 75px;font-family: Arial'>"+weather.temperature+"&deg</div>"+
+			                   "<div id='pic' style='position:absolute;float:right;margin-top:15px;right:5px;color: white;font-size: 75px;font-family: Arial'><img id='wIcon' src='"+weather.pic+"' style='height:90px'/></div>"+
+		                  
+		                   "</div>"+
+	                  "</div>"+
+	                  "<div id='forecastInfo' style='margin-top:-100px;float:left;margin-left:100%;width:100%;'>"+
+	                  	
+	                  "</div>"+
+	                   	                  
 	    "</div>");
 	    
-	    $('body').append("<div id='refreshButton'></div>");
+	   getForecast();
+	    
+	    document.getElementById("info").addEventListener('touchmove',function(event){
+	    	$("#info").removeClass('animateLeft');
+	    	$("#info").removeClass('animateRight');
+	    	$$('#info').swipeLeft(function(){
+	    		
+	    	$("#info").addClass('animateLeft');
+	    	});
+	    	
+	    	$$('#info').swipeRight(function(){
+	    		$("#info").addClass('animateRight');
+	    	});
+
+	    });
+	    
+	 
+	    
+	  
+
+	    
+	    $('#mainWrapper').append("<div id='refreshButton'></div>");
 	    $('#refreshButton')[0].addEventListener('touchstart',function(){
 	    	$("#refreshButton").addClass('animated');
 			  navigator.accelerometer.clearWatch(compass);
@@ -370,21 +406,21 @@ function w(){
 	    	w();
 	    });
 	    
-	    var transform = false;
-
-    	document.getElementById('info').addEventListener('touchstart',function(target){
-    		if(transform){
-    			transform = false;
-
-    		}else{
-    			transform =true;
-    			
-    		}
-    		
-    	
-    	});
+//	    var transform = false;
+//
+//    	document.getElementById('info').addEventListener('touchstart',function(target){
+//    		if(transform){
+//    			transform = false;
+//
+//    		}else{
+//    			transform =true;
+//    			
+//    		}
+//    		
+//    	
+//    	});
 	    
-    	
+	   
     	
         var compass  = navigator.accelerometer.watchAcceleration(function(acc){
         	var z = acc.z.toFixed('1');
@@ -419,7 +455,10 @@ function w(){
 	    
 	  
 	}
-
-
+	
+	
+	
+	
+	
 
 
