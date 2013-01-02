@@ -1,5 +1,5 @@
 $(document).ready(function(){
-$("body").append("OK");
+
 	$("body").on('touchmove',function(e){e.preventDefault();});
 });
 document.addEventListener('deviceready',function(){
@@ -18,7 +18,7 @@ function w(){
 	 * To change this template use File | Settings | File Templates.
 	 */
 
-      var debug = true;
+      var debug = false;
 	  var loc = new Object();
 	  var weather = new Object();
 
@@ -97,8 +97,8 @@ function w(){
 	             //  var forecast  =  data.forecast.simpleforecast.forecastday[0];
 
 	               var result = data.current_observation;
-	                result.icon = 'snow';
-	                result.temp_c = '12';
+	               // result.icon = 'snow';
+	              //  result.temp_c = '12';
 	               //console.log(result);
 	               var hour = new Date(result.local_time_rfc822);
 	               if(hour >  loc.sunset){
@@ -266,7 +266,6 @@ function w(){
 	    	
 	        var canvas = document.getElementById("canvas");
 	         
-	         WebGL2D.enable(canvas); // adds "webgl-2d" context to cvs
 
 
 	        $('#mainWrapper').css('margin','0px');
@@ -375,23 +374,41 @@ function w(){
 	                  "</div>"+
 	                   	                  
 	    "</div>");
-	    
-	   getForecast();
+	   
+	   getForecast(weather.location.lat,weather.location.long);
 	    
 	    document.getElementById("info").addEventListener('touchmove',function(event){
-	    	$("#info").removeClass('animateLeft');
-	    	$("#info").removeClass('animateRight');
+	    
 	    	$$('#info').swipeLeft(function(){
 	    		
 	    	$("#info").addClass('animateLeft');
 	    	});
 	    	
 	    	$$('#info').swipeRight(function(){
-	    		$("#info").addClass('animateRight');
+	    		$("#info").removeClass('animateLeft');
 	    	});
 
 	    });
 	    
+	    
+	    document.getElementById('mainWrapper').addEventListener('touchmove',function(){
+	    	$$("#mainWrapper").swipeUp(function(){
+	    		$("#mainWrapper").addClass("up");
+	    		setTimeout(function(){
+    				$("#settings").show();
+    			},400);
+	    		
+	    	});
+	    });
+	    
+	    document.getElementById('settings').addEventListener('touchmove',function(){
+	    	$$("#settings").swipeDown(function(){
+	    		$("#mainWrapper").removeClass("up");
+	    		$("#settings").hide();
+	    	});
+	    });
+	    
+	 
 	 
 	    
 	  
