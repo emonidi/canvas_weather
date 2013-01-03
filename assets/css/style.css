@@ -156,12 +156,15 @@ ul.forecast li h3 {
 
 
 .animateLeft{
-	-webkit-transform: translate3d(-100%,0,0);
-
+	left:-100%;
+	-webkit-transition:.2s ease-in;
 	
 }
 
 #info{
+		-webkit-transition:.2s ease-in;
+	   
+
 	}
 
 #mainWrapper{
@@ -194,7 +197,19 @@ ul.forecast li h3 {
 	transition:.5s;
 }
 
+.down{
+	
+	
+	-webkit-transition:.5s;
+	-webkit-transform: translate3d(0,0,0);
+	transition:.5s;
+}
+
 #settings{
 	display:none;
+	
+}
+
+#settings h2{
 	
 }

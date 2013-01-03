@@ -403,7 +403,10 @@ function w(){
 	    
 	    document.getElementById('settings').addEventListener('touchmove',function(){
 	    	$$("#settings").swipeDown(function(){
-	    		$("#mainWrapper").removeClass("up");
+	    		$("#mainWrapper").removeClass("up").addClass('down');
+	    		setTimeout(function(){
+	    			$("#mainWrapper").removeClass('down');
+	    		},400);
 	    		$("#settings").hide();
 	    	});
 	    });
